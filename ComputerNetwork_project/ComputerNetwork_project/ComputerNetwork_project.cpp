@@ -28,6 +28,8 @@ CComputerNetworkprojectApp::CComputerNetworkprojectApp()
 
 	// TODO: 여기에 생성 코드를 추가합니다.
 	// InitInstance에 모든 중요한 초기화 작업을 배치합니다.
+	m_Conectm = 0;
+	m_Server = FALSE;
 }
 
 
@@ -109,5 +111,85 @@ BOOL CComputerNetworkprojectApp::InitInstance()
 	// 대화 상자가 닫혔으므로 응용 프로그램의 메시지 펌프를 시작하지 않고  응용 프로그램을 끝낼 수 있도록 FALSE를
 	// 반환합니다.
 	return FALSE;
+}
+
+void CComputerNetworkprojectApp::InitServer(CString strIP)
+{
+	m_Server = TRUE;
+	m_pServer = new ServerSock;
+	m_pServer->Create(8000, SOCK_DGRAM);
+
+	m_pClient = new ClientSock;
+	m_pClient->Create(8001, SOCK_DGRAM);
+}
+
+void CComputerNetworkprojectApp::Connect(CString strIP, CString strPort)
+{
+	m_pClient = new ClientSock;
+	m_pClient->Create(_ttoi(strPort), SOCK_DGRAM);
+	m_pClient->SendTo(NULL, NULL, 8000, strIP);
+}
+
+void CComputerNetworkprojectApp::ReceiveInit()
+{
+	CString ip;
+	UINT port;
+
+	m_pServer->ReceiveFrom(NULL, NULL, ip, port);
+	if (m_Conectm < MAX_MEMBER)
+	{
+		m_Portlist[m_Conectm] = port;
+		m_IPlist[m_Conectm] = ip;
+		m_Conectm++;
+	}
+	else
+	{
+		CString temp;
+		temp.Format(_T("-1"));
+		m_pServer->SendTo((LPCTSTR)temp, sizeof(TCHAR)*(temp.GetLength() + 1), port, ip);
+	}
+}
+
+void CComputerNetworkprojectApp::ReceiveData()
+{
+	CString ip;
+	UINT port;
+	wchar_t temp[MAX_PATH];
+
+	m_pClient->ReceiveFrom(temp, sizeof(temp), ip, port);
+	if (_ttoi(temp) == -1)
+	{
+		delete m_pClient;
+		m_pClient = NULL;
+	}
+	else
+	{
+		if (m_Server == TRUE)
+		{
+			for (int i = 0; i < m_Conectm; i++)
+			{
+				if (m_Portlist[i] != port && m_IPlist[i] != ip) ;
+					// 모든 클라이언트들에게 파일 전송해야 하는 코드 작성
+			}
+		}
+	}
+}
+
+void CComputerNetworkprojectApp::SendData(CString strData, CString strIP)
+{
+	if (m_Server == TRUE)
+	{
+		for (int i = 0; i < m_Conectm; i++);
+			// 모든 클라이언트들에게 파일 전송하는 코드 작성
+	}
+	else
+	{
+		// 서버의 Client 담당 소켓에 파일 전송하는 코드 작성
+	}
+}
+
+void CComputerNetworkprojectApp::CloseChild()
+{
+	// 코드 작성필요
 }
 

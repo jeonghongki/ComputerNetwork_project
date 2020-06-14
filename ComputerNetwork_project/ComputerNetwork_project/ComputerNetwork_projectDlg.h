@@ -3,7 +3,10 @@
 //
 
 #pragma once
+#include "afxwin.h"
+#include <vector>
 
+using namespace std;
 
 // CComputerNetworkprojectDlg 대화 상자
 class CComputerNetworkprojectDlg : public CDialogEx
@@ -31,4 +34,28 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+private:
+	static BOOL CALLBACK GetWindowList(HWND hWnd, LPARAM lParam);
+public:
+	static vector<CWnd*> m_pWnds;
+	static CStringArray m_strArray;
+	CWnd* m_pCaptureWnd;
+	BOOL m_Draw;
+	CPoint m_point;
+	CString m_strMyIP;
+	CString m_strOtherIP;
+	CComboBox m_combo;
+	CEdit m_Port;
+	CIPAddressCtrl m_IPAddress;
+	int m_CaptureMode;
+	CStatic m_picture;
+	void DeleteWindowList();
+	afx_msg void OnBnClickedRadioServer();
+	afx_msg void OnBnClickedRadioClient();
+	afx_msg void OnBnClickedButtonConnect();
+	afx_msg void OnCbnSelchangeComboList();
+	afx_msg void OnBnClickedRefresh();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 };

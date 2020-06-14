@@ -9,6 +9,10 @@
 #endif
 
 #include "resource.h"		// 주 기호입니다.
+#include "ServerSock.h"
+#include "ClientSock.h"
+
+#define MAX_MEMBER 10
 
 
 // CComputerNetworkprojectApp:
@@ -27,6 +31,20 @@ public:
 // 구현입니다.
 
 	DECLARE_MESSAGE_MAP()
+
+public:
+	ServerSock* m_pServer;
+	ClientSock* m_pClient;
+	BOOL m_Server;
+	CString m_IPlist[MAX_MEMBER];
+	UINT m_Portlist[MAX_MEMBER];
+	int m_Conectm;
+	void InitServer(CString strIP);
+	void Connect(CString strIP, CString strPort);
+	void ReceiveInit();
+	void ReceiveData();
+	void SendData(CString strData, CString strIP);
+	void CloseChild();
 };
 
 extern CComputerNetworkprojectApp theApp;
